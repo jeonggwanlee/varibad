@@ -1,12 +1,7 @@
 import numpy as np
 from learning_to_adapt.utils.serializable import Serializable
-#from utils.serializable import Serializable
 from learning_to_adapt.envs.mujoco_env import MujocoEnv
-#from gym.envs.mujoco.mujoco_env import MujocoEnv
 from learning_to_adapt.logger import logger
-
-from learning_to_adapt import spaces
-
 import os
 
 
@@ -17,11 +12,8 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         self.cripple_mask = None
         self.reset_every_episode = reset_every_episode
         self.first = True
-
-        self.action_noise = 0.0
-
-        MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)), "assets", "half_cheetah_hfield.xml"),
-                           5)  # frame skip
+        MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                              "assets", "half_cheetah_hfield.xml"))
 
         task = None if task == 'None' else task
 
@@ -38,7 +30,6 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         self.height_walls = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2])
         self.height = 0.8
         self.width = 15
-
 
     def get_current_obs(self):
         return np.concatenate([
@@ -75,8 +66,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         return reward
 
     def reset_mujoco(self, init_state=None):
-        #super(HalfCheetahHFieldEnv, self).reset_mujoco(init_state=init_state)
-        self.reset_mujoco(init_state=init_state)
+        super(HalfCheetahHFieldEnv, self).reset_mujoco(init_state=init_state)
         if self.reset_every_episode and not self.first:
             self.reset_task()
 
@@ -174,63 +164,6 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             raise NotImplementedError
 
         self.model.forward()
-
-    #@property
-    #def action_space(self):
-    #    bounds = self.model.actuator_ctrlrange
-    #    lb = bounds[:, 0]
-    #    ub = bounds[:, 1]
-    #    return spaces.Box(lb, ub)
-
-    @property
-    def action_bounds(self):
-        bounds = self.model.actuator_ctrlrange
-        return (bounds[:, 0], bounds[:, 1])
-
-    def inject_action_noise(self, action):
-        # generate action noise
-        noise = self.action_noise * \
-                np.random.normal(size=action.shape)
-        # rescale the noise to make it proportional to the action bounds
-        lb, ub = self.action_bounds
-        noise = 0.5 * (ub - lb) * noise
-        return action + noise
-
-    def forward_dynamics(self, action):
-        self.data.ctrl = self.inject_action_noise(action)
-        for _ in range(self.frame_skip):
-            self.model.step()
-        self.model.forward()
-        new_com = self.model.data.com_subtree[0]
-        self.dcom = new_com - self.current_com
-        self.current_com = new_com
-
-    def get_body_comvel(self, body_name):
-        idx = self.model.body_names.index(body_name)
-        return self.model.body_comvels[idx]
-
-    def reset_mujoco(self, init_state=None):
-        if init_state is None:
-            if self.random_init_state:
-                self.model.data.qpos = self.init_qpos + \
-                    np.random.normal(size=self.init_qpos.shape) * 0.01
-                self.model.data.qvel = self.init_qvel + \
-                    np.random.normal(size=self.init_qvel.shape) * 0.1
-            else:
-                self.model.data.qpos = self.init_qpos
-                self.model.data.qvel = self.init_qvel
-
-            self.model.data.qacc = self.init_qacc
-            self.model.data.ctrl = self.init_ctrl
-        else:
-            start = 0
-            for datum_name in ["qpos", "qvel", "qacc", "ctrl"]:
-                datum = getattr(self.model.data, datum_name)
-                datum_dim = datum.shape[0]
-                datum = init_state[start: start + datum_dim]
-                setattr(self.model.data, datum_name, datum)
-                start += datum_dim
-
 
     def log_diagnostics(self, paths, prefix):
         progs = [
