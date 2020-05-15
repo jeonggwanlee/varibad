@@ -24,6 +24,10 @@ from config.mujoco import \
 from learner import Learner
 from metalearner import MetaLearner
 
+# error message
+#XIO:  fatal IO error 25 (Inappropriate ioctl for device) on X server "localhost:17.0"
+import matplotlib
+matplotlib.use('Agg')
 
 def main():
     parser = argparse.ArgumentParser()
