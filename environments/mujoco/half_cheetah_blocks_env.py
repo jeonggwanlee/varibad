@@ -49,6 +49,9 @@ class HalfCheetahBlocksEnv(MujocoEnv):
         idx = self.model.body_names.index(body_name)
         return self.data.subtree_com[idx]
 
+    def get_task(self):
+        return 1  # dummy
+
     def step(self, action):
         xy_position_before = self.get_body_com("torso")[:2].copy()
         self.forward_dynamics(action)
