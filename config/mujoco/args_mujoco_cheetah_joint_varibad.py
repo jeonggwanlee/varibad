@@ -145,7 +145,7 @@ def get_args(rest_args):
     parser.add_argument('--seed', type=int, default=73, help='random seed (default: 73)')
     parser.add_argument('--deterministic_execution', type=boolean_argument, default=False,
                         help='Make code fully deterministic. Expects 1 process and uses deterministic CUDNN')
-    parser.add_argument('--num_processes', type=int, default=8, # 16,
+    parser.add_argument('--num_processes', type=int, default=32, # 16,
                         help='how many training CPU processes to use (default: 16)')
     args = parser.parse_args(rest_args)
 
