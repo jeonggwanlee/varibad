@@ -447,3 +447,64 @@ class MetaLearner:
                     if param_list[0].grad is not None:
                         param_grad_mean = np.mean([param_list[i].grad.cpu().numpy().mean() for i in range(len(param_list))])
                         self.logger.add('gradients/{}'.format(name), param_grad_mean, self.iter_idx)
+
+    def load_and_render(self, load_iter):
+        #save_path = os.path.join('/ext/varibad_github/v2/varibad/logs/logs_HalfCheetahJoint-v0/varibad_73__15:05_17:14:07', 'models')
+        #save_path = os.path.join('/ext/varibad_github/v2/varibad/logs/hfield', 'models')
+        save_path = os.path.join('/ext/varibad_github/v2/varibad/logs/logs_HalfCheetahBlocks-v0/varibad_73__15:05_20:20:25', 'models')
+        self.policy.actor_critic = torch.load(os.path.join(save_path, "policy{0}.pt".format(load_iter)))
+        self.vae.encoder = torch.load(os.path.join(save_path, "encoder{0}.pt").format(load_iter))
+
+        args = self.args
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+        num_processes = 1
+        num_episodes = 100
+        num_steps = 1999
+
+        #import pdb; pdb.set_trace()
+        # initialise environments
+        envs = make_vec_envs(env_name=args.env_name, seed=args.seed, num_processes=num_processes,  # 1
+                                  gamma=args.policy_gamma, log_dir=args.agent_log_dir, device=device,
+                                  allow_early_resets=False,
+                                  episodes_per_task=self.args.max_rollouts_per_task,
+                                  obs_rms=None, ret_rms=None,
+                                  )
+
+        # reset latent state to prior
+        latent_sample, latent_mean, latent_logvar, hidden_state = self.vae.encoder.prior(num_processes)
+
+        for episode_idx in range(num_episodes):
+            (prev_obs_raw, prev_obs_normalised) = envs.reset()
+            prev_obs_raw = prev_obs_raw.to(device)
+            prev_obs_normalised = prev_obs_normalised.to(device)
+            for step_idx in range(num_steps):
+
+                with torch.no_grad():
+                    _, action, _ = utl.select_action(args=self.args,
+                                                     policy=self.policy,
+                                                     obs=prev_obs_normalised if self.args.norm_obs_for_policy else prev_obs_raw,
+                                                     latent_sample=latent_sample,
+                                                     latent_mean=latent_mean,
+                                                     latent_logvar=latent_logvar,
+                                                     deterministic=True)
+
+                # observe reward and next obs
+                (next_obs_raw, next_obs_normalised), (rew_raw, rew_normalised), done, infos = utl.env_step(envs,
+                                                                                                           action)
+                # render
+                envs.venv.venv.envs[0].env.env.env.env.render()
+
+                # update the hidden state
+                latent_sample, latent_mean, latent_logvar, hidden_state = utl.update_encoding(encoder=self.vae.encoder,
+                                                                                              next_obs=next_obs_raw,
+                                                                                              action=action,
+                                                                                              reward=rew_raw,
+                                                                                              done=None,
+                                                                                              hidden_state=hidden_state)
+
+                prev_obs_normalised = next_obs_normalised
+                prev_obs_raw = next_obs_raw
+
+                if done[0]:
+                    break
