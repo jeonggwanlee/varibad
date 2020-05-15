@@ -82,7 +82,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         return self.data.subtree_com[idx]
 
     def get_task(self):
-        return self.task
+        return 1  ## dummy #self.task
 
     def step(self, action):
         self.forward_dynamics(action)
