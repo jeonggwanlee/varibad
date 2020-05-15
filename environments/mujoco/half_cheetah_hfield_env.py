@@ -21,7 +21,7 @@ from environments.mujoco.mj_env import MujocoEnv
 #
 
 class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
-    def __init__(self, task='hfield', reset_every_episode=False, reward=True, *args, **kwargs):
+    def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, *args, **kwargs):
         Serializable.quick_init(self, locals())
 
         self.cripple_mask = None
@@ -55,6 +55,8 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         self.height = 0.8
         self.width = 15
 
+        self._max_episode_steps = max_episode_steps
+
         # LEGACY_CODE
         # action_noise
         #self.action_noise = 0.0
@@ -79,6 +81,9 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         #return self.model.data.com_subtree[idx]
         return self.data.subtree_com[idx]
 
+    def get_task(self):
+        return self.task
+
     def step(self, action):
         self.forward_dynamics(action)
         next_obs = self.get_current_obs()
@@ -86,7 +91,10 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         forward_reward = self.get_body_comvel("torso")[0]
         reward = forward_reward - ctrl_cost
         done = False
-        info = {}
+        info = dict(reward_forward=forward_reward,
+                    reward_ctrl=-ctrl_cost,
+                    task=self.get_task(),
+                    done_mdp=done)
         return next_obs, reward, done, info
 
     def reward(self, obs, action, next_obs):
