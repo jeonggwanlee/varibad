@@ -62,6 +62,14 @@ register(
     max_episode_steps=200
 )
 
+register(
+    'HalfCheetahBlocks-v0',
+    entry_point='environments.wrappers:mujoco_wrapper',
+    kwargs={'entry_point': 'environments.mujoco.half_cheetah_blocks_env:HalfCheetahBlocksEnv',
+            'max_episode_steps': 200},
+    max_episode_steps=200
+)
+
 # - randomised dynamics
 
 register(
