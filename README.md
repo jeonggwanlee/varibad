@@ -8,5 +8,6 @@ python main.py --env-type mujoco_cheetah_hfield_varibad
 
 ## github branching
 
-git branchout -b [name]  : branch 하기
+git checkout -b [name]  : branch 하기
+
 
