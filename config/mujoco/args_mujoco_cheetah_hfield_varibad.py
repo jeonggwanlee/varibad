@@ -20,7 +20,7 @@ def get_args(rest_args):
                         help='Train policy w/o variBAD architecture')
 
     # env
-    parser.add_argument('--env_name', default='HalfCheetahVel-v0', help='environment to train on')
+    parser.add_argument('--env_name', default='HalfCheetahHField-v0', help='environment to train on')
     parser.add_argument('--norm_obs_for_policy', type=boolean_argument, default=True,
                         help='normalise env observations (for policy)')
     parser.add_argument('--norm_rew_for_policy', type=boolean_argument, default=True,
@@ -74,11 +74,10 @@ def get_args(rest_args):
     parser.add_argument('--vae_batch_num_enc_lens', type=int, default=50)
     parser.add_argument('--num_vae_updates', type=int, default=1,
                         help='how many VAE update steps to take per meta-iteration')
-    parser.add_argument('--kl_weight', type=float, default=1.0, help='weight for the KL term')
+    parser.add_argument('--kl_weight', type=float, default=0.1, help='weight for the KL term')
     parser.add_argument('--precollect_len', type=int, default=0,
                         help='how many frames to pre-collect before training begins')
-    parser.add_argument('--pretrain_len', type=int, default=0,
-                        help='for how many updates to pre-train the VAE (done with the frames from precollect-len)')
+    parser.add_argument('--pretrain_len', type=int, default=0, help='for how many updates to pre-train the VAE')
 
     # - encoder
     parser.add_argument('--latent_dim', type=int, default=5, help='dimensionality of latent space')
@@ -146,7 +145,7 @@ def get_args(rest_args):
     parser.add_argument('--seed', type=int, default=73, help='random seed (default: 73)')
     parser.add_argument('--deterministic_execution', type=boolean_argument, default=False,
                         help='Make code fully deterministic. Expects 1 process and uses deterministic CUDNN')
-    parser.add_argument('--num_processes', type=int, default=1, # 16,
+    parser.add_argument('--num_processes', type=int, default=16,  # 16,
                         help='how many training CPU processes to use (default: 16)')
     args = parser.parse_args(rest_args)
 
