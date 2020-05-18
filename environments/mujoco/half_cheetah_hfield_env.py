@@ -22,6 +22,7 @@ from environments.mujoco.mj_env import MujocoEnv
 
 class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
     def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, *args, **kwargs):
+        print(task)
         Serializable.quick_init(self, locals())
 
         self.cripple_mask = None
@@ -119,7 +120,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             height = np.random.uniform(0.2, 1)
             width = 10
             n_walls = 6
-            #self.model.hfield_size = np.array([50, 5, height, 0.1])
+            self.model.hfield_size[:] = np.array([50, 5, height, 0.1])
             x_walls = np.random.choice(np.arange(255, 310, width), replace=False, size=n_walls)
             x_walls.sort()
             sign = np.random.choice([1, -1], size=n_walls)
@@ -132,7 +133,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
                 row[x + width:] = row[x + width - 1]
             row = (row - np.min(row)) / (np.max(row) - np.min(row))
             hfield = np.tile(row.reshape(-1, 1), (1, 528)).T.reshape(-1, 1)
-            #self.model.hfield_data = hfield
+            self.model.hfield_data[:] = hfield.reshape(-1)
 
         elif self.task == 'basin':
             self.height_walls = np.array([-1, 1, 0., 0., 0., 0.])
@@ -140,7 +141,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             height = self.height
             width = self.width
             self.x_walls = np.array([255, 270, 285, 300, 315, 330]) - 5
-            self.model.hfield_size = np.array([50, 5, height, 0.1])
+            self.model.hfield_size[:] = np.array([50, 5, height, 0.1])
             row = np.zeros((500,))
             for i, x in enumerate(self.x_walls):
                 terrain = np.cumsum([self.height_walls[i]] * width)
@@ -148,7 +149,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
                 row[x + width:] = row[x + width - 1]
             row = (row - np.min(row)) / (np.max(row) - np.min(row))
             hfield = np.tile(row.reshape(-1, 1), (1, 528)).T.reshape(-1, 1)
-            self.model.hfield_data = hfield
+            self.model.hfield_data[:] = hfield.reshape(-1)
 
         elif self.task == 'hill':
             self.height_walls = np.array([1, -1, 0, 0., 0, 0])
@@ -156,7 +157,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             height = self.height
             width = self.width
             self.x_walls = np.array([255, 270, 285, 300, 315, 330]) - 5
-            self.model.hfield_size = np.array([50, 5, height, 0.1])
+            self.model.hfield_size[:] = np.array([50, 5, height, 0.1])
             row = np.zeros((500,))
             for i, x in enumerate(self.x_walls):
                 terrain = np.cumsum([self.height_walls[i]] * width)
@@ -164,7 +165,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
                 row[x + width:] = row[x + width - 1]
             row = (row - np.min(row)) / (np.max(row) - np.min(row))
             hfield = np.tile(row.reshape(-1, 1), (1, 528)).T.reshape(-1, 1)
-            self.model.hfield_data = hfield
+            self.model.hfield_data[:] = hfield.reshape(-1)
 
         elif self.task == 'gentle':
             self.height_walls = np.array([1, 1, 1, 1, 1, 1])
@@ -172,7 +173,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             height = self.height
             width = self.width
             self.x_walls = np.array([255, 270, 285, 300, 315, 330]) - 5
-            self.model.hfield_size = np.array([50, 5, height, 0.1])
+            self.model.hfield_size[:] = np.array([50, 5, height, 0.1])
             row = np.zeros((500,))
             for i, x in enumerate(self.x_walls):
                 terrain = np.cumsum([self.height_walls[i]] * width)
@@ -180,7 +181,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
                 row[x + width:] = row[x + width - 1]
             row = (row - np.min(row)) / (np.max(row) - np.min(row))
             hfield = np.tile(row.reshape(-1, 1), (1, 528)).T.reshape(-1, 1)
-            self.model.hfield_data = hfield
+            self.model.hfield_data[:] = hfield.reshape(-1)
 
         elif self.task == 'steep':
             self.height_walls = np.array([1, 1, 1, 1, 1, 1])
@@ -188,7 +189,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
             height = self.height
             width = self.width
             self.x_walls = np.array([255, 270, 285, 300, 315, 330]) - 5
-            self.model.hfield_size = np.array([50, 5, height, 0.1])
+            self.model.hfield_size[:] = np.array([50, 5, height, 0.1])
             row = np.zeros((500,))
             for i, x in enumerate(self.x_walls):
                 terrain = np.cumsum([self.height_walls[i]] * width)
@@ -196,7 +197,7 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
                 row[x + width:] = row[x + width - 1]
             row = (row - np.min(row)) / (np.max(row) - np.min(row))
             hfield = np.tile(row.reshape(-1, 1), (1, 528)).T.reshape(-1, 1)
-            self.model.hfield_data = hfield
+            self.model.hfield_data[:] = hfield.reshape(-1)
 
         elif self.task is None:
             pass
@@ -218,8 +219,10 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         #    logger.logkv(prefix + 'StdForwardProgress', np.std(progs))
 
 if __name__ == '__main__':
-    env = HalfCheetahHFieldEnv(task='hfield')
-    while True:
+    for task in ['hfield', 'hill', 'basin', 'steep', 'gentle']:
+        print(task)
+        env = HalfCheetahHFieldEnv(task=task)
+        #while True:
         env.reset()
         env.reset_task()
         for _ in range(1000):
