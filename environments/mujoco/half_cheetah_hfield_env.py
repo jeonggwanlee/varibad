@@ -22,7 +22,7 @@ from environments.mujoco.mj_env import MujocoEnv
 
 class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
     def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, *args, **kwargs):
-        print(task)
+        #print(task)
         Serializable.quick_init(self, locals())
 
         self.cripple_mask = None
