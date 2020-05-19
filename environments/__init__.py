@@ -50,61 +50,61 @@ register(
     'HalfCheetahHfield-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_hfield_env:HalfCheetahHFieldEnv',
-            'max_episode_steps': 1000,
+            'max_episode_steps': 200,
             'task': 'hfield'},
-    max_episode_steps=1000
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahHill-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_hfield_env:HalfCheetahHFieldEnv',
-            'max_episode_steps': 1000,
+            'max_episode_steps': 200,
             'task': 'hill'},
-    max_episode_steps=1000
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahBasin-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_hfield_env:HalfCheetahHFieldEnv',
-            'max_episode_steps': 1000,
+            'max_episode_steps': 200,
             'task': 'basin'},
-    max_episode_steps=1000
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahGentle-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_hfield_env:HalfCheetahHFieldEnv',
-            'max_episode_steps': 1000,
+            'max_episode_steps': 200,
             'task': 'gentle'},
-    max_episode_steps=1000
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahSteep-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_hfield_env:HalfCheetahHFieldEnv',
-            'max_episode_steps': 1000,
+            'max_episode_steps': 200,
             'task': 'steep'},
-    max_episode_steps=1000
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahJoint-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_joint_env:HalfCheetahJointEnv',
-            'max_episode_steps': 1000},
-    max_episode_steps=1000
+            'max_episode_steps': 200},
+    max_episode_steps=200
 )
 
 register(
     'HalfCheetahBlocks-v0',
     entry_point='environments.wrappers:mujoco_wrapper',
     kwargs={'entry_point': 'environments.mujoco.half_cheetah_blocks_env:HalfCheetahBlocksEnv',
-            'max_episode_steps': 1000},
-    max_episode_steps=1000
+            'max_episode_steps': 200},
+    max_episode_steps=200
 )
 
 # - randomised dynamics
