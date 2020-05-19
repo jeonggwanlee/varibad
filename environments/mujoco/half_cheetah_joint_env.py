@@ -57,14 +57,14 @@ class HalfCheetahJointEnv(MujocoEnv):
         xy_position_before = self.get_body_com("torso")[:2].copy()
         self.forward_dynamics(action)
         xy_position_after = self.get_body_com("torso")[:2].copy()
-
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
 
         next_obs = self.get_current_obs()
-
+        # control cost
         ctrl_cost = 1e-1 * 0.5 * np.sum(np.square(action))
-        forward_reward = x_velocity
+        forward_reward = self.get_body_comvel("torso")[0]
+        #forward_reward = x_velocity
         reward = forward_reward - ctrl_cost
         done = False
         info = {
@@ -137,7 +137,7 @@ if __name__ == '__main__':
         env.reset_task()
         for _ in range(1000):
             env.step(env.action_space.sample())
-            env.render()
+            #env.render()
 
 
 
