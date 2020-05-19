@@ -63,7 +63,8 @@ class HalfCheetahBlocksEnv(MujocoEnv):
         x_velocity, y_velocity = xy_velocity
 
         ctrl_cost = 1e-1 * 0.5 * np.sum(np.square(action))
-        forward_reward = x_velocity
+        #forward_reward = x_velocity
+        forward_reward = self.get_body_comvel("torso")[0]
         reward = forward_reward - ctrl_cost
         done = False
 
