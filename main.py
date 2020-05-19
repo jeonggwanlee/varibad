@@ -17,9 +17,10 @@ from config.mujoco import \
     args_mujoco_cheetah_vel_oracle, args_mujoco_cheetah_vel_rl2, args_mujoco_cheetah_vel_varibad, \
     args_mujoco_ant_dir_oracle, args_mujoco_ant_dir_rl2, args_mujoco_ant_dir_varibad, \
     args_mujoco_walker_oracle, args_mujoco_walker_rl2, args_mujoco_walker_varibad, \
-    args_mujoco_cheetah_hfield_varibad, \
+    args_mujoco_cheetah_hfield_varibad, args_mujoco_cheetah_hill_varibad, args_mujoco_cheetah_basin_varibad, \
+    args_mujoco_cheetah_gentle_varibad, args_mujoco_cheetah_steep_varibad, \
     args_mujoco_cheetah_joint_varibad, \
-    args_mujoco_cheetah_blocks_varibad
+    args_mujoco_cheetah_blocks_varibad \
 
 from learner import Learner
 from metalearner import MetaLearner
@@ -84,6 +85,22 @@ def main():
     # - CheetahHField
     elif env == 'mujoco_cheetah_hfield_varibad':
         args = args_mujoco_cheetah_hfield_varibad.get_args(rest_args)
+
+    # - CheetahHill
+    elif env == 'mujoco_cheetah_hill_varibad':
+        args = args_mujoco_cheetah_hill_varibad.get_args(rest_args)
+
+    # - CheetahBasin
+    elif env == 'mujoco_cheetah_basin_varibad':
+        args = args_mujoco_cheetah_basin_varibad.get_args(rest_args)
+
+    # - CheetahGentle
+    elif env == 'mujoco_cheetah_gentle_varibad':
+        args = args_mujoco_cheetah_gentle_varibad.get_args(rest_args)
+
+    # - CheetahSteep
+    elif env == 'mujoco_cheetah_steep_varibad':
+        args = args_mujoco_cheetah_steep_varibad.get_args(rest_args)
 
     # - CheetahJoint
     elif env == 'mujoco_cheetah_joint_varibad':
