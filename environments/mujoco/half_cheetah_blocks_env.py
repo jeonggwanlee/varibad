@@ -33,7 +33,7 @@ class HalfCheetahBlocksEnv(MujocoEnv):
         self.task = task
 
         self._max_episode_steps = max_episode_steps
-        self.visualise_behaviour = True
+        #self.visualise_behaviour = True
 
     def get_current_obs(self):
         return np.concatenate([
