@@ -11,13 +11,14 @@ from environments.mujoco.mj_env import MujocoEnv
 class HalfCheetahBlocksEnv(MujocoEnv):
 
 
-    def __init__(self, task='damping', max_episode_steps=200, reset_every_episode=False):
+    def __init__(self, task='damping', max_episode_steps=200, reset_every_episode=False, frame_skip=1):
         #Serializable.quick_init(self, locals())
 
         self.reset_every_episode = reset_every_episode
         self.first = True
+        print("frame_skip :", frame_skip)
         MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                              "assets", "half_cheetah_blocks.xml"))
+                                              "assets", "half_cheetah_blocks.xml"), frame_skip=frame_skip)
         task = None if task == 'None' else task
 
         self.cripple_mask = np.ones(self.action_space.shape)
