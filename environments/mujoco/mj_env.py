@@ -13,6 +13,7 @@ import mujoco_py
 
 BIG = 1e6
 
+
 class MujocoEnv(gym.Env):
 
     def __init__(self, model_path, frame_skip=1, action_noise=0.0, random_init_state=True):
@@ -42,7 +43,6 @@ class MujocoEnv(gym.Env):
         self.action_noise = action_noise
         self.random_init_state = random_init_state
 
-
         """
         if "init_qpos" in self.model.numeric_names:
             init_qpos_id = self.model.numeric_names.index("init_qpos")
@@ -50,7 +50,7 @@ class MujocoEnv(gym.Env):
             size = self.model.numeric_size.flat[init_qpos_id]
             init_qpos = self.model.numeric_data.flat[addr:addr + size]
             self.init_qpos = init_qpos
-        
+
         """
         self.dcom = None
         self.current_com = None
@@ -74,18 +74,16 @@ class MujocoEnv(gym.Env):
     def action_bounds(self):
         return self.action_space.low, self.action_space.high
 
-
     def reset_mujoco(self, init_state=None):
         if init_state is None:
             if self.random_init_state:
                 qp = self.init_qpos.copy() + \
-                    np.random.normal(size=self.init_qpos.shape) * 0.01
+                     np.random.normal(size=self.init_qpos.shape) * 0.01
                 qv = self.init_qvel.copy() + \
-                    np.random.normal(size=self.init_qvel.shape) * 0.1
+                     np.random.normal(size=self.init_qvel.shape) * 0.1
             else:
                 qp = self.init_qpos.copy()
                 qv = self.init_qvel.copy()
-
 
             qacc = self.init_qacc.copy()
             ctrl = self.init_ctrl.copy()
@@ -105,7 +103,7 @@ class MujocoEnv(gym.Env):
 
     def reset(self, init_state=None):
 
-        #self.reset_mujoco(init_state)
+        # self.reset_mujoco(init_state)
         self.sim.reset()
         self.sim.forward()
 
@@ -114,9 +112,8 @@ class MujocoEnv(gym.Env):
 
         return self.get_current_obs()
 
-
     def set_state(self, qpos, qvel, qacc):
-        assert qpos.shape == (self.qpos_dim,) and qvel.shape ==(self.qvel_dim, ) and qacc.shape == (self.qacc_dim,)
+        assert qpos.shape == (self.qpos_dim,) and qvel.shape == (self.qvel_dim,) and qacc.shape == (self.qacc_dim,)
         state = self.sim.get_state()
         for i in range(self.model.nq):
             state.qpos[i] = qpos[i]
@@ -124,7 +121,6 @@ class MujocoEnv(gym.Env):
             state.qvel[i] = qvel[i]
         self.sim.set_state(state)
         self.sim.forward()
-
 
     def get_current_obs(self):
         return self._get_full_obs()
@@ -191,8 +187,8 @@ class MujocoEnv(gym.Env):
     def get_viewer(self, config=None):
         if self.viewer is None:
             self.viewer = MjViewer(self.sim)
-            #self.viewer.start()
-            #self.viewer.set_model(self.model)
+            # self.viewer.start()
+            # self.viewer.set_model(self.model)
         if config is not None:
             pass
             # self.viewer.set_window_pose(config["xpos"], config["ypos"])
@@ -214,7 +210,7 @@ class MujocoEnv(gym.Env):
             viewer.loop_once()
             # self.get_viewer(config=config).render()
             data, width, height = self.get_viewer(config=config).get_image()
-            return np.fromstring(data, dtype='uint8').reshape(height, width, 3)[::-1,:,:]
+            return np.fromstring(data, dtype='uint8').reshape(height, width, 3)[::-1, :, :]
         if close:
             self.stop_viewer()
 
@@ -239,8 +235,7 @@ class MujocoEnv(gym.Env):
         return self.data.ximat[idx].reshape((3, 3))
 
     def get_body_com(self, body_name):
-        idx = self.model.body_names.index(body_name)
-        return self.data.subtree_com[idx]
+        return self.data.get_body_xpos(body_name)
 
     def get_body_comvel(self, body_name):
         idx = self.model.body_names.index(body_name)
@@ -252,7 +247,7 @@ class MujocoEnv(gym.Env):
         for i in range(self.model.nbody):
             # body velocity
             # Compute object 6D velocity in object-centered frame, world/local orientation.
-            #mj_objectVelocity(const mjModel* m, const mjData* d, int objtype, int objid, mjtMum* res, int flg_local)
+            # mj_objectVelocity(const mjModel* m, const mjData* d, int objtype, int objid, mjtMum* res, int flg_local)
             mujoco_py.cymj._mj_objectVelocity(self.model, self.data, 1, i, body_vels[i], 0)
         lin_moms = body_vels[:, 3:] * mass.reshape((-1, 1))
 
@@ -269,7 +264,7 @@ class MujocoEnv(gym.Env):
         return_ = lin_moms / mass.reshape((-1, 1))
         return return_[idx]
 
-        #return self.model.body_comvels[idx]
+        # return self.model.body_comvels[idx]
 
     # def get_body_comvel(self, body_name):
     #     idx = self.model.body_names.index(body_name)
@@ -279,7 +274,6 @@ class MujocoEnv(gym.Env):
     # def print_stats(self):
     #     super(MujocoEnv, self).print_stats()
     #     print("qpos dim:\t%d" % len(self.data.qpos))
-
 
     def action_from_key(self, key):
         raise NotImplementedError
