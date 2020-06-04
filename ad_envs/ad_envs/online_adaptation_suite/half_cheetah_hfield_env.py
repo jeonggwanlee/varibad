@@ -1,8 +1,8 @@
 import numpy as np
 import os
-from learning_to_adapt.utils.serializable import Serializable
+#from learning_to_adapt.utils.serializable import Serializable
 #from gym.envs.mujoco.mujoco_env import MujocoEnv
-from environments.mujoco.mj_env import MujocoEnv
+from ad_envs.online_adaptation_suite.mj_env import MujocoEnv
 
 # class MujocoEnv(gym.Env):
 #
@@ -20,19 +20,17 @@ from environments.mujoco.mj_env import MujocoEnv
 #         # MjSim = MjModel + MjData``
 #
 
-class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
-    def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, frame_skip=1, *args, **kwargs):
-        #print(task)
-        Serializable.quick_init(self, locals())
+class HalfCheetahHFieldEnv(MujocoEnv):
+    def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, *args, **kwargs):
 
         self.cripple_mask = None
         self.reset_every_episode = reset_every_episode
         self.first = True
-        print("frame_skip :", frame_skip)
+
         MujocoEnv.__init__(self,
                            os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                         "assets",
-                                        "half_cheetah_hfield.xml"), frame_skip=frame_skip)
+                                        "half_cheetah_hfield.xml"))
 
         task = None if task == 'None' else task
 
@@ -219,10 +217,8 @@ class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
         #    logger.logkv(prefix + 'StdForwardProgress', np.std(progs))
 
 if __name__ == '__main__':
-    for task in ['hfield', 'hill', 'basin', 'steep', 'gentle']:
-        print(task)
-        env = HalfCheetahHFieldEnv(task=task)
-        #while True:
+    env = HalfCheetahHFieldEnv(task='hfield')
+    while True:
         env.reset()
         env.reset_task()
         for _ in range(1000):

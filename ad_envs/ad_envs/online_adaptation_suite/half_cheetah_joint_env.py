@@ -4,20 +4,18 @@ import numpy as np
 #from learning_to_adapt.logger import logger
 import os
 
-from environments.mujoco.mj_env import MujocoEnv
+from ad_envs.online_adaptation_suite.mj_env import MujocoEnv
 
 #class HalfCheetahEnv(MujocoEnv, Serializable):
 
 
 class HalfCheetahJointEnv(MujocoEnv):
-    def __init__(self, task='cripple', max_episode_steps=200, reset_every_episode=False, frame_skip=1):
+    def __init__(self, task='cripple', max_episode_steps=200, reset_every_episode=False):
         #Serializable.quick_init(self, locals())
         self.cripple_mask = None
         self.reset_every_episode = reset_every_episode
         self.first = True
-        print("frame_skip :", frame_skip)
-        MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)), "assets", "half_cheetah.xml"),
-                           frame_skip=frame_skip)
+        MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)), "assets", "half_cheetah.xml"))
 
         task = None if task == 'None' else task
 
@@ -59,14 +57,14 @@ class HalfCheetahJointEnv(MujocoEnv):
         xy_position_before = self.get_body_com("torso")[:2].copy()
         self.forward_dynamics(action)
         xy_position_after = self.get_body_com("torso")[:2].copy()
+
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
 
         next_obs = self.get_current_obs()
-        # control cost
+
         ctrl_cost = 1e-1 * 0.5 * np.sum(np.square(action))
-        forward_reward = self.get_body_comvel("torso")[0]
-        #forward_reward = x_velocity
+        forward_reward = x_velocity
         reward = forward_reward - ctrl_cost
         done = False
         info = {
@@ -139,7 +137,7 @@ if __name__ == '__main__':
         env.reset_task()
         for _ in range(1000):
             env.step(env.action_space.sample())
-            #env.render()
+            env.render()
 
 
 
