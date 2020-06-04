@@ -8,6 +8,7 @@ from environments.mujoco.mj_env import MujocoEnv
 
 class HalfCheetahBlocksEnv(MujocoEnv):
 
+#<<<<<<< ys
     def __init__(self, task='damping',
                  max_episode_steps=200,
                  reset_every_episode=False,
@@ -19,11 +20,17 @@ class HalfCheetahBlocksEnv(MujocoEnv):
                  contact_force_range=(-1.0, 1.0),
                  ):
         # Serializable.quick_init(self, locals())
+#=======
+#
+#    def __init__(self, task='damping', max_episode_steps=200, reset_every_episode=False, frame_skip=1):
+#        #Serializable.quick_init(self, locals())
+#>>>>>>> master
 
         self.reset_every_episode = reset_every_episode
         self.first = True
+        print("frame_skip :", frame_skip)
         MujocoEnv.__init__(self, os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                              "assets", "half_cheetah_blocks.xml"))
+                                              "assets", "half_cheetah_blocks.xml"), frame_skip=frame_skip)
         task = None if task == 'None' else task
         self.cripple_mask = np.ones(self.action_space.shape)
 
@@ -39,6 +46,7 @@ class HalfCheetahBlocksEnv(MujocoEnv):
 
         self._max_episode_steps = max_episode_steps
         #self.visualise_behaviour = True
+#<<<<<<< ys
 
         #reward
         self._ctrl_cost_weight = ctrl_cost_weight
@@ -83,6 +91,8 @@ class HalfCheetahBlocksEnv(MujocoEnv):
     def done(self):
         done = (not self.is_healthy if self._terminate_when_unhealthy else False)
         return done
+#=======
+#>>>>>>> master
 
     def get_current_obs(self):
         return np.concatenate([
@@ -103,15 +113,24 @@ class HalfCheetahBlocksEnv(MujocoEnv):
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
 
+#<<<<<<< ys
         # ctrl_cost = 1e-1 * 0.5 * np.sum(np.square(action))
         ctrl_cost = 1e-1 * self._ctrl_cost_weight * np.sum(np.square(action))
         contact_cost = self.contact_cost
         costs = ctrl_cost + contact_cost
 
-        forward_reward = x_velocity
+        #forward_reward = x_velocity
+        forward_reward = self.get_body_comvel("torso")[0]
         healthy_reward= self.healthy_reward
         reward = forward_reward - costs + healthy_reward
         done = self.done
+#=======
+#        ctrl_cost = 1e-1 * 0.5 * np.sum(np.square(action))
+#        #forward_reward = x_velocity
+#        forward_reward = self.get_body_comvel("torso")[0]
+#        reward = forward_reward - ctrl_cost
+#        done = False
+#>>>>>>> master
 
         info = {
             'reward_forward': forward_reward,
