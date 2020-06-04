@@ -20,7 +20,7 @@ def get_args(rest_args):
                         help='Train policy w/o variBAD architecture')
 
     # env
-    parser.add_argument('--env_name', default='HalfCheetahHfield-v0', help='environment to train on')
+    parser.add_argument('--env_name', default='HalfCheetahHill-v0', help='environment to train on')
     parser.add_argument('--norm_obs_for_policy', type=boolean_argument, default=True,
                         help='normalise env observations (for policy)')
     parser.add_argument('--norm_rew_for_policy', type=boolean_argument, default=True,

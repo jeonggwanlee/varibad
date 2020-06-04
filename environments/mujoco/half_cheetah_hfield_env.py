@@ -21,18 +21,18 @@ from environments.mujoco.mj_env import MujocoEnv
 #
 
 class HalfCheetahHFieldEnv(MujocoEnv, Serializable):
-    def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, *args, **kwargs):
-        print(task)
+    def __init__(self, task='hfield', max_episode_steps=200, reset_every_episode=False, reward=True, frame_skip=1, *args, **kwargs):
+        #print(task)
         Serializable.quick_init(self, locals())
 
         self.cripple_mask = None
         self.reset_every_episode = reset_every_episode
         self.first = True
-
+        print("frame_skip :", frame_skip)
         MujocoEnv.__init__(self,
                            os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                         "assets",
-                                        "half_cheetah_hfield.xml"))
+                                        "half_cheetah_hfield.xml"), frame_skip=frame_skip)
 
         task = None if task == 'None' else task
 
